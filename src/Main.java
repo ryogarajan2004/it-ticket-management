@@ -1,5 +1,17 @@
+import store.DataStore;
+import store.DataStoreManager;
+
 public class Main {
+    public static DataStore store;
    public static void main(String [] args) {
-        System.out.println("Hello World");
-    }
+       store= DataStoreManager.loadData();
+
+       Runtime.getRuntime().addShutdownHook(
+               new Thread(()->DataStoreManager.saveData(store))
+       );
+
+       while (true) {
+
+       }
+   }
 }

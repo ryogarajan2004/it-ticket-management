@@ -1,12 +1,16 @@
 package model;
 
 
-public class User {
-    private  Long id;
-    private  String name;
-    private  String username;
-    private  String email;
-    private  String password;
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private Long id;
+    private String name;
+    private String username;
+    private String email;
+    private String password;
     private Role role;
 
     public User(Long id, String name, String username, String email, String password) {
