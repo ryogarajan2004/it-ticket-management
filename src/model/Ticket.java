@@ -8,14 +8,14 @@ public class Ticket implements Serializable {
 
 
     private Long id;
-    private  String title;
-    private  String description;
+    private String title;
+    private String description;
     private TicketStatus status;
-    private  Long assigneeId; //Agent
+    private Long assigneeId; //Agent
     private Long reporterId; // User
     private Category category;
-    private  String notes;
-    private  String remark;
+    private String notes;
+    private String remark;
 
     public String getTitle() {
         return title;
