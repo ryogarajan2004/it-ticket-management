@@ -1,5 +1,7 @@
 package screens;
 
+import app.Main;
+import model.Agent;
 import model.User;
 import service.LoginService;
 
@@ -42,11 +44,12 @@ public class LoginScreen {
             System.out.println("Invalid username or password");
             return;
         }
+        Main.currentUser=u;
 
         switch (u.getRole()) {
             case USER -> UserScreen.show(u);
             case ADMIN -> AdminScreen.show(u);
-            case AGENT -> AgentScreen.show(u);
+            case AGENT -> AgentScreen.show((Agent) u);
         }
     }
 }

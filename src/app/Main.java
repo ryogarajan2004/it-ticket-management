@@ -8,6 +8,7 @@ import store.DataStoreManager;
 
 public class Main {
     public static DataStore store;
+    public static User currentUser;
 
     public static void main(String[] args) {
 
@@ -17,7 +18,7 @@ public class Main {
                 new Thread(() -> DataStoreManager.saveData(store))
         );
 
-        if (store.users.isEmpty()) {
+        if (store.users.isEmpty() || (store.users.stream().noneMatch(x -> x.getRole().equals(Role.ADMIN)))) {
             store.users.add(new User(1L, "Admin", "admin", "admin@gmail.com", "1234", Role.ADMIN));
             System.out.println("Default admin created:  admin/ 1234");
         }

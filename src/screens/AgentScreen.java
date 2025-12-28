@@ -2,78 +2,83 @@ package screens;
 
 import app.Main;
 import model.Agent;
-import model.Ticket;
-import model.TicketStatus;
-import model.User;
+import service.AgentService;
 
 public class AgentScreen {
 
-    public static void show(User user) {
-        Agent agent = (Agent) user;
+    public static void show(Agent agent) {
 
         while (true) {
             Screen.separator();
-            System.out.println("AGENT DASHBOARD  (" + agent.getId() + ")");
-            System.out.println("Category:  " + agent.getCategory());
-            System.out.println("1.  View Assigned Tickets");
-            System.out.println("2.  Work on Ticket");
-            System.out.println("q.  Logout");
+            System.out.println("AGENT DASHBOARD (" + agent.getId() + ")");
+            System.out.println("Category: " + agent.getCategory());
+
+            System.out.println("1. View Assigned Tickets");
+            System.out.println("2. Work on Ticket");
+            System.out.println("3. Add Remark");
+            System.out.println("q. Logout");
 
             String c = Screen.sc.nextLine();
 
             switch (c) {
                 case "1" -> viewAssigned(agent);
-                case "2" -> workOnTicket(agent);
-                case "q" -> {
-                    return;
-                }
-                default -> System.out.println("Invalid Option");
-            }
-        }
-    }
-
-    public static void assignAgentToTicket(Ticket t) {
-        for (User u : Main.store.users) {
-            if (u instanceof Agent agent) {
-                if (agent.getCategory() == t.getCategory()) {
-                    t.setAssigneeId(agent.getId());
-                    t.setStatus(TicketStatus.ASSIGNED);
-                    return;
-                }
+                case "2" -> workOnTicket();
+                case "3" -> addRemark();
+                case "q" -> { return; }
+                default -> System.out.println("Invalid option");
             }
         }
     }
 
     private static void viewAssigned(Agent agent) {
         Screen.separator();
-        System.out.println("TICKETSS ASSIGNED TO YOU:  ");
+        System.out.println("TICKETS ASSIGNED TO YOU");
 
-        Main.store.tickets.stream().filter(t -> agent.getId().equals(t.getAssigneeId())).forEach(t -> System.out.println("ID: " + t.getId() +
-                " | Title:  " + t.getTitle() +
-                " | Status:  " + t.getStatus()));
+        Main.store.tickets.stream()
+                .filter(t -> agent.getId().equals(t.getAssigneeId()))
+                .forEach(t -> System.out.println(
+                        "ID: " + t.getId() +
+                                " | Title: " + t.getTitle() +
+                                " | Status: " + t.getStatus()
+                ));
     }
 
-    private static void workOnTicket(Agent agent) {
-        System.out.println("Enter Ticket ID:  ");
+    private static void workOnTicket() {
+        try {
+            System.out.print("Enter Ticket ID: ");
+            long id = Long.parseLong(Screen.sc.nextLine());
 
-        long id = Long.parseLong(Screen.sc.nextLine());
+            System.out.println("1. Mark IN_PROGRESS");
+            System.out.println("2. Resolve Ticket");
 
-        Ticket t = Main.store.tickets.stream().filter(x -> x.getId().equals(id) && agent.getId().equals(x.getAssigneeId())).findFirst().orElse(null);
+            String choice = Screen.sc.nextLine();
 
-        if (t == null) {
-            System.out.println("Ticket NOT FOUND");
-            return;
+            if ("1".equals(choice)) {
+                AgentService.markInProgress(id);
+                System.out.println("Ticket marked IN_PROGRESS");
+            } else if ("2".equals(choice)) {
+                AgentService.resolve(id);
+                System.out.println("Ticket resolved");
+            } else {
+                System.out.println("Invalid choice");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println("1.  Mark In Progress");
-        System.out.println("2.  Resolve Ticket");
+    }
 
-        String choice = Screen.sc.nextLine();
+    private static void addRemark() {
+        try {
+            System.out.print("Enter Ticket ID: ");
+            long id = Long.parseLong(Screen.sc.nextLine());
 
-        switch (choice) {
-            case "1" -> t.setStatus(TicketStatus.IN_PROGRESS);
-            case "2" -> t.setStatus(TicketStatus.RESOLVED);
+            System.out.print("Enter remark: ");
+            String remark = Screen.sc.nextLine();
+
+            AgentService.addRemark(id, remark);
+            System.out.println("Remark added");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-
-        System.out.println("Updated Ticket");
     }
 }

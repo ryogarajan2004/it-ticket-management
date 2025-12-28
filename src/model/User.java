@@ -1,11 +1,13 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class User implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private final Long id;
     private String name;
     private String username;
     private String email;
@@ -24,19 +26,8 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.category=null;
     }
-    public User(Long id, String name, String username, String email,
-                String password, Role role,Category category) {
 
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.category=category;
-    }
     // ---------- getters/setters ----------
 
     public Long getId() { return id; }

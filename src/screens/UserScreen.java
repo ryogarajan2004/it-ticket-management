@@ -3,25 +3,26 @@ package screens;
 import app.Main;
 import model.Category;
 import model.Ticket;
-import model.TicketStatus;
 import model.User;
+import service.UserService;
 
 public class UserScreen {
 
     public static void show(User user) {
         while (true) {
             Screen.separator();
-            System.out.println("USER DASH (" + user.getUsername() + "):");
+            System.out.println("USER DASH (" + user.getUsername() + ")");
             System.out.println("1. Raise Ticket");
-            System.out.println("2. View My Tickets ");
+            System.out.println("2. View My Tickets");
             System.out.println("q. Logout");
 
             String choice = Screen.sc.nextLine();
 
             switch (choice) {
-                case "1" -> raiseTicket(user);
+                case "1" -> raiseTicket();
                 case "2" -> viewMyTickets(user);
                 case "q" -> {
+                    Main.currentUser = null;
                     return;
                 }
                 default -> System.out.println("Invalid choice");
@@ -29,34 +30,34 @@ public class UserScreen {
         }
     }
 
-    private static void raiseTicket(User user) {
-        Screen.separator();
-        System.out.println("RAISE TICKET");
+    private static void raiseTicket() {
+        try {
+            Screen.separator();
+            System.out.println("RAISE TICKET");
 
-        Ticket t = new Ticket();
-        t.setId(System.currentTimeMillis());
-        t.setReporterId(user.getId());
+            System.out.print("Title: ");
+            String title = Screen.sc.nextLine();
 
-        System.out.println("Title:  ");
-        t.setTitle(Screen.sc.nextLine());
+            System.out.print("Description: ");
+            String description = Screen.sc.nextLine();
 
-        System.out.println("Description: ");
-        t.setDescription(Screen.sc.nextLine());
+            System.out.println("Select Category:");
+            Category[] categories = Category.values();
+            for (int i = 0; i < categories.length; i++) {
+                System.out.println(i + ". " + categories[i]);
+            }
 
-        System.out.println("Select Category");
-        for (Category c : Category.values()) {
-            System.out.println("- " + c);
+            int index = Integer.parseInt(Screen.sc.nextLine());
+            Category category = categories[index];
+
+            Ticket t = UserService.raiseTicket(title, description, category);
+
+            System.out.println("Ticket raised successfully");
+            System.out.println("Ticket ID: " + t.getId());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-
-        t.setCategory(Category.values()[Integer.parseInt(Screen.sc.nextLine().toUpperCase())]);
-        t.setStatus(TicketStatus.OPEN);
-
-        AgentScreen.assignAgentToTicket(t);
-
-        Main.store.tickets.add(t);
-        System.out.println("Ticket Raised with ID:  " + t.getId());
-
-
     }
 
     private static void viewMyTickets(User user) {
@@ -64,12 +65,11 @@ public class UserScreen {
         System.out.println("MY TICKETS");
 
         Main.store.tickets.stream()
-                .filter(t -> t.getReporterId().equals(user.getId()))
-                .forEach(t -> {
-                    System.out.println("ID: " + t.getId() + " | " +
-                            "Title: " + t.getTitle() + " | " +
-                            "Status: " + t.getStatus());
-                });
-        System.out.println();
+                .filter(t -> user.getId().equals(t.getReporterId()))
+                .forEach(t -> System.out.println(
+                        "ID: " + t.getId() +
+                                " | Title: " + t.getTitle() +
+                                " | Status: " + t.getStatus()
+                ));
     }
 }
