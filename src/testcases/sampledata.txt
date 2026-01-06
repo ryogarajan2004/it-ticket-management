@@ -1,0 +1,55 @@
+========================
+USERS
+========================
+ID | NAME        | USERNAME | EMAIL                | PASSWORD | ROLE
+---------------------------------------------------------------
+1  | Alice       | alice_u  | alice@test.com       | pass123  | USER
+2  | Bob         | bob_a    | bob@test.com         | pass123  | AGENT
+3  | Charlie     | charlie  | charlie@test.com     | pass123  | AGENT
+4  | Admin       | admin    | admin@test.com       | admin123 | ADMIN
+
+
+========================
+TICKETS
+========================
+ID | TITLE              | CATEGORY  | SUBCATEGORY | STATUS        | REPORTER_ID | ASSIGNEE_ID
+--------------------------------------------------------------------------------------------
+101 | Laptop not booting | HARDWARE  | Laptop      | OPEN          | 1           | -
+102 | VPN not working   | NETWORK   | VPN          | IN_PROGRESS   | 1           | 2
+103 | Email reset       | ACCOUNT   | Password    | RESOLVED      | 1           | 3
+
+
+========================
+TICKET DETAILS
+========================
+Ticket ID: 101
+Description:
+Laptop does not start after Windows update.
+
+Agent Notes:
+-
+
+User Remark:
+-
+
+
+Ticket ID: 102
+Description:
+Unable to connect to company VPN from home network.
+
+Agent Notes:
+Checked VPN logs. Suspected firewall issue.
+
+User Remark:
+-
+
+
+Ticket ID: 103
+Description:
+Forgot email password and cannot login.
+
+Agent Notes:
+Password reset done and shared via secure channel.
+
+User Remark:
+Waiting for confirmation.
